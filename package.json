@@ -1,0 +1,16 @@
+{
+  "name": "luxsequencer-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Entorno de desarrollo unificado de LuxSequencer. No se publica: sólo orquesta los proyectos hermanos.",
+  "workspaces": [
+    "luxsequencer-contracts",
+    "lux-ui",
+    "core-renderers",
+    "luxsequencer-core",
+    "luxsequencer-cloud"
+  ],
+  "devDependencies": {
+    "@ladle/react": "^5.1.1"
+  }
+}

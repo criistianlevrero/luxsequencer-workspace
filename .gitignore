@@ -1,0 +1,8 @@
+# El lockfile de la raíz SÍ se versiona: es el que unifica el workspace.
+node_modules/
+
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example

@@ -1,0 +1,20 @@
+[submodule "luxsequencer-contracts"]
+	path = luxsequencer-contracts
+	url = git@github.com:criistianlevrero/luxsequencer-contracts.git
+	branch = main
+[submodule "lux-ui"]
+	path = lux-ui
+	url = git@github.com:criistianlevrero/lux-ui.git
+	branch = main
+[submodule "core-renderers"]
+	path = core-renderers
+	url = git@github.com:criistianlevrero/luxsequencer-marketplace-official.git
+	branch = main
+[submodule "luxsequencer-core"]
+	path = luxsequencer-core
+	url = git@github.com:criistianlevrero/luxsequencer.git
+	branch = 0.6-beta
+[submodule "luxsequencer-cloud"]
+	path = luxsequencer-cloud
+	url = git@github.com:criistianlevrero/luxsequencer-cloud.git
+	branch = main
