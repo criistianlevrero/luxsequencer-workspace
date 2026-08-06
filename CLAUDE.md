@@ -61,13 +61,15 @@ Ninguno es de topología de repos; son previos a esa decisión.
    explícita el default es *todos los derechos reservados*: nadie puede forkear ni redistribuir
    legalmente.
 
-2. ~~**`@luxsequencer/contracts` no se puede publicar en npm.**~~ **Resuelto parcialmente el
-   2026-08-06**: se creó el repo git, se removió `"private": true`, y se agregaron `LICENSE`,
-   `publishConfig.access: public`, `repository` y script `prepare`. **Queda pendiente**: crear el
-   remoto, y limpiar `src/api.ts` antes de publicar — mezcla dos generaciones de contratos con 13
-   tipos sin consumidores, y publicar los ata a semver. Ver
-   [luxsequencer-contracts/STATUS.md](luxsequencer-contracts/STATUS.md).
-   `lux-ui` sigue listo para publicar (MIT, sin `private`), pero le falta archivo `LICENSE`.
+2. ~~**Los paquetes compartidos no se pueden publicar en npm.**~~ **RESUELTO el 2026-08-06.**
+   `@luxsequencer/contracts@0.1.0` y `@luxsequencer/ui@0.1.0` están publicados en npm público,
+   ambos MIT y con `LICENSE`. Contracts pasó de no tener repo git a tener repo, remoto y
+   publicación; se le limpiaron 8 tipos huérfanos de `src/api.ts` antes de publicar, para no
+   atarlos a semver. Los tres consumidores ya declaran `^0.1.0` en vez de `file:../`.
+
+   Pendiente menor: republicar `lux-ui` como `0.1.1`. El `@source` de Tailwind que se agregó a
+   `src/foundation/styles.css` viaja en el paquete, así que los consumidores externos no lo
+   reciben hasta que salga esa versión.
 
 3. **"Cloud cerrado" hoy no protege nada.**
    `luxsequencer-cloud` es una SPA que habla directo con Supabase desde el browser. La lógica de
@@ -167,52 +169,54 @@ Rollout: hecho en `luxsequencer-cloud`. Pendiente en los otros cuatro.
 
 ---
 
-## Decisión abierta: topología de repositorios
+## Topología de repositorios — RESUELTA (2026-08-06)
 
-**Sin resolver al 2026-08-06.** No ejecutar cambios de topología sin confirmación explícita.
+Implementada y verificada con clones limpios. Ver [README.md](README.md) para el uso diario.
 
-**Lo que ya quedó resuelto**: al decidirse npm público para `lux-ui` y `contracts`, el pin de
-versiones de esos dos pasa a ser semver en `package.json`. Eso elimina el argumento principal
-para tenerlos como submódulos, y reduce la discusión pendiente a: (a) ¿la raíz se vuelve repo
-git?, y (b) ¿`core-renderers` y `cloud` entran como submódulos o quedan sueltos?
+**Forma final**: repo raíz privado `criistianlevrero/luxsequencer-workspace`, con los cinco
+proyectos como **submódulos** y un **npm workspace** que los abarca.
 
-**Prerrequisito bloqueante**: `luxsequencer-contracts` no tiene repo git y tiene
-`"private": true`. Sin resolver eso no hay publicación en npm ni topología posible que lo
-incluya. Es el primer paso de cualquiera de los caminos.
+Las dos capas son independientes y resuelven cosas distintas:
 
-Propuesta inicial del autor: convertir la raíz en repo git, cada proyecto como submódulo, y
-`luxsequencer-cloud` como subcarpeta simple.
+- **Submódulos (git)**: cómo se clona. El repo raíz no contiene el código de los proyectos, sólo
+  punteros a commit. Cada proyecto conserva repo, historia y rama propias (core en `0.6-beta`).
+  El aporte real es registrar **qué combinación de commits funciona junta** — el registro que
+  faltaba cuando apareció el cambio de `diagnostic-fps` partido entre dos repos.
+- **Workspaces (npm)**: cómo se resuelven las dependencias. Los consumidores declaran `^0.1.0`
+  en vez de `file:../`. Dentro del workspace npm enlaza las carpetas locales; fuera, baja del
+  registro.
 
-Puntos de análisis registrados:
+**Verificado end-to-end con clones desde cero:**
 
-- **La raíz como repo git tiene consenso**: versiona el `CLAUDE.md`, los scripts de bootstrap y
-  las ADRs. Hoy este archivo vive en un directorio sin versionar.
-- **`cloud` como subcarpeta tiene una contradicción**: si la raíz es pública, la subcarpeta es
-  pública y se pierde el código cerrado; si la raíz es privada, el desarrollador externo no
-  puede clonarla y se pierde la DX unificada. Además, cloud es el proyecto que más va a
-  necesitar pipeline de deploy y secretos independientes, cosa que una subcarpeta acopla.
-- **Submódulos y npm publishing son redundantes para `lux-ui` y `contracts`**: resuelven el mismo
-  problema (estado reproducible entre repos). Publicado en npm, el `package.json` del consumidor
-  *es* el pin. Mantener ambos genera drift silencioso: el puntero del submódulo apunta a un SHA
-  que el build no usa.
-- **El contrato core ↔ core-renderers no lo resuelve ningún submódulo**: es HTTP en runtime. Su
-  versionado real es `packageVersion` del manifest, hoy desconectado (ver drift #3).
-- **Impacto en agentes IA**: el tamaño de contexto **no cambia** — la topología git no altera qué
-  archivos hay en disco. La palanca de contexto es el scoping vía `CLAUDE.md` por subproyecto.
-  Lo que sí impacta es que los submódulos son una clase conocida de errores para agentes (HEAD
-  detached, commitear un puntero a un SHA no pusheado, `submodule update` descartando trabajo).
-  Riesgo actualmente activo: hay commits sin pushear en `lux-ui` y en `luxsequencer-core`.
-- **Combinación sugerida si se va por submódulos**: agregar **npm workspaces** en la raíz listando
-  los directorios de los submódulos. Da un `npm install` único y symlinks automáticos, y elimina
-  el cableado manual de `file:../lux-ui` que causa el problema de `dist` desactualizado. Costo a
-  vigilar: convivencia entre lockfile raíz y lockfiles por proyecto.
+| Escenario | Resultado |
+|---|---|
+| `clone --recurse-submodules` + `npm install` | Symlinks a las carpetas locales; core buildea; clases de lux-ui en el CSS |
+| Clonar `core-renderers` solo + `npm install` | Baja `@luxsequencer/contracts@0.1.0` del registro; imports y `validate` OK |
+
+El segundo escenario **era imposible antes**: contracts sólo existía en el disco del autor.
+
+**Descartado — `cloud` como subcarpeta simple.** Si la raíz es pública, la subcarpeta expone el
+código cerrado; si es privada, el externo no puede clonarla. Además cloud es el que más va a
+necesitar deploy y secretos propios, y una subcarpeta acopla eso al repo raíz. Quedó como
+submódulo, con la raíz privada.
+
+**Descartado — submódulos como mecanismo de pinning para `lux-ui` y `contracts`.** Una vez
+publicados en npm, el pin es semver en `package.json`. Mantener ambos generaría drift silencioso:
+el puntero apuntando a un SHA que el build no usa.
+
+**Sobre agentes IA**: el tamaño de contexto **no cambió** — la topología git no altera qué
+archivos hay en disco. La palanca sigue siendo el scoping vía `CLAUDE.md` y `STATUS.md` por
+proyecto. Lo que sí importa es que los submódulos son una clase conocida de errores (HEAD
+detached, commitear un puntero a un SHA no pusheado, `submodule update` descartando trabajo). Las
+trampas concretas están en el [README.md](README.md).
 
 ---
 
 ## Topología real
 
-No es un monorepo npm. Es **una carpeta contenedora con 5 proyectos independientes**, de los
-cuales **4 son repositorios git separados** y **1 no está bajo control de versiones**.
+Repo raíz privado `criistianlevrero/luxsequencer-workspace` con los 5 proyectos como submódulos,
+unidos por un npm workspace. Cada proyecto sigue siendo un repositorio independiente y clonable
+por separado.
 
 | Directorio | Paquete npm | Repo git | Branch | Versión |
 |---|---|---|---|---|
@@ -240,24 +244,25 @@ Notas críticas de topología:
 ### Grafo de dependencias real (`file:` + symlinks)
 
 ```
-luxsequencer-contracts  (git local sin remoto, fuente de tipos compartidos)
+@luxsequencer/contracts  (npm público 0.1.0 · fuente de tipos compartidos)
         ▲        ▲        ▲
-        │        │        │  file:../luxsequencer-contracts
+        │        │        │  "^0.1.0"  → symlink local dentro del workspace,
+        │        │        │              descarga del registro fuera de él
         │        │        └────────────── core-renderers   (devDependency)
         │        └────────────────────── luxsequencer-cloud
         └───────────────────────────────  luxsequencer-core
 
-lux-ui  (@luxsequencer/ui, consumido vía dist/ compilado)
+@luxsequencer/ui  (npm público 0.1.0 · consumido vía dist/ compilado)
         ▲        ▲
-        └────────┴── luxsequencer-core, luxsequencer-cloud   file:../lux-ui
+        └────────┴── luxsequencer-core, luxsequencer-cloud   "^0.1.0"
 
 core-renderers  →  NO es dependencia npm de core.
                    Se consume en runtime por HTTP (proxy same-origin, puerto 4174).
 ```
 
-Symlinks verificados en `*/node_modules/@luxsequencer/{contracts,ui}` — apuntan a los
-directorios hermanos. Editar `lux-ui/src` **no** se refleja en los consumidores hasta correr
-`npm run build` en `lux-ui` (consume `dist/`, no `src/`).
+Symlinks verificados en `node_modules/@luxsequencer/{contracts,ui}` **de la raíz** — el workspace
+hoistea. Editar `lux-ui/src` **no** se refleja en los consumidores hasta correr `npm run build`
+en `lux-ui` (consume `dist/`, no `src/`); el script `prepare` lo cubre en cada `npm install`.
 
 ### Tamaño relativo (líneas en `src/`)
 
@@ -450,10 +455,24 @@ Orden sugerido, de contrato hacia afuera:
 | Fase | Estado | Fecha |
 |---|---|---|
 | General del monorepo | ✅ hecho | 2026-08-06 |
-| luxsequencer-contracts | ⬜ pendiente | — |
-| lux-ui | ⬜ pendiente | — |
+| luxsequencer-contracts | ✅ hecho — auditado, publicado, con `STATUS.md` | 2026-08-06 |
+| luxsequencer-cloud | 🟡 parcial — `STATUS.md` y README hechos; falta auditar el código a fondo | 2026-08-06 |
+| lux-ui | ⬜ pendiente — publicado, pero sin `STATUS.md` ni auditoría | — |
 | core-renderers | ⬜ pendiente | — |
-| luxsequencer-core | ⬜ pendiente | — |
-| luxsequencer-cloud | ⬜ pendiente | — |
+| luxsequencer-core | ⬜ pendiente — es el 70% del código, el más grande | — |
 
 Al cerrar cada fase: actualizar esta tabla y agregar el informe del proyecto (o un enlace a él).
+
+## Pendientes abiertos al cierre del 2026-08-06
+
+1. **Republicar `lux-ui` como `0.1.1`** — el `@source` de Tailwind en `styles.css` no llega a
+   consumidores externos hasta esa versión.
+2. **El CSS de core creció de 102.77 kB a 119.81 kB** tras la migración. Las clases correctas
+   están (verificado con `.select-none`), pero el aumento no está explicado: se sospecha que la
+   detección automática de Tailwind ahora sube hasta la raíz del workspace y escanea proyectos
+   hermanos. Es bloat, no falta de estilos.
+3. **`ring-offset-*` no se genera nunca**, ni siquiera `.ring-offset-2`. Tailwind v4 no tiene esas
+   utilidades: es markup muerto en el `Button` de `lux-ui`, preexistente a la migración.
+4. **Sin lockfile en clones sueltos** — costo asumido del lockfile único en la raíz.
+5. **Bloqueantes 1, 3 y 4 del modelo de distribución** siguen abiertos: licencias vacías, cloud
+   sin lado servidor, y validación de licencias rota en ambos extremos.
