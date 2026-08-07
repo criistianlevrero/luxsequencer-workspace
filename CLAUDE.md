@@ -467,12 +467,27 @@ Al cerrar cada fase: actualizar esta tabla y agregar el informe del proyecto (o 
 
 1. **Republicar `lux-ui` como `0.1.1`** — el `@source` de Tailwind en `styles.css` no llega a
    consumidores externos hasta esa versión.
-2. **El CSS de core creció de 102.77 kB a 119.81 kB** tras la migración. Las clases correctas
-   están (verificado con `.select-none`), pero el aumento no está explicado: se sospecha que la
-   detección automática de Tailwind ahora sube hasta la raíz del workspace y escanea proyectos
-   hermanos. Es bloat, no falta de estilos.
-3. **`ring-offset-*` no se genera nunca**, ni siquiera `.ring-offset-2`. Tailwind v4 no tiene esas
-   utilidades: es markup muerto en el `Button` de `lux-ui`, preexistente a la migración.
-4. **Sin lockfile en clones sueltos** — costo asumido del lockfile único en la raíz.
-5. **Bloqueantes 1, 3 y 4 del modelo de distribución** siguen abiertos: licencias vacías, cloud
+
+2. **Decidir el pinneo de dependencias.** Borrar los lockfiles por proyecto provocó un upgrade no
+   revisado en los cinco: `tailwindcss` 4.1.18 → 4.3.3, `daisyui` 5.5.19 → 5.7.16,
+   `@tailwindcss/postcss` 4.1.18 → 4.3.3, `react` 19.2.0 → 19.2.8, `vite` 6.4.1 → 6.4.3.
+   Nada se rompió (type-check, builds y tests iguales), y el lockfile de la raíz ya congela el
+   estado, así que el float fue por única vez. Falta decidir si se acepta, se revierte o se
+   audita el changelog.
+
+   Esto **explica el crecimiento del CSS de core** de 102.77 kB a 119.81 kB, que en su momento
+   quedó sin explicación. Se descartaron con evidencia las dos hipótesis de falla: no faltan
+   estilos (`.select-none` presente) y Tailwind no escanea proyectos hermanos (las clases
+   exclusivas de cloud no aparecen en el CSS de core).
+
+3. **Sin lockfile en clones sueltos** — costo asumido del lockfile único en la raíz.
+
+4. **Bloqueantes 1, 3 y 4 del modelo de distribución** siguen abiertos: licencias vacías, cloud
    sin lado servidor, y validación de licencias rota en ambos extremos.
+
+### Descartado por error de medición
+
+- ~~`ring-offset-*` no se genera nunca~~ — **falso**. `focus:ring-offset-2` y
+  `focus:ring-offset-gray-800` sí se generan. El test original buscaba `.ring-offset-2` sin
+  prefijo, pero `Button.tsx` sólo usa esas clases con la variante `focus:`, así que el selector
+  real es `.focus\:ring-offset-2`. No hay markup muerto en `lux-ui`.
