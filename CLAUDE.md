@@ -159,6 +159,57 @@ Una vez entregado, está en su máquina. No hay forma de impedir que alguien dec
 El objetivo realista es encarecer la copia casual, no volverla imposible — y eso acota cuánta
 ingeniería vale la pena meterle.
 
+### Estrategia de versiones de dependencias (2026-08-07)
+
+**Contexto**: al unificar el workspace se borraron los lockfiles por proyecto, lo que provocó un
+upgrade no revisado en los cinco: `tailwindcss` 4.1.18 → 4.3.3, `daisyui` 5.5.19 → 5.7.16,
+`@tailwindcss/postcss` 4.1.18 → 4.3.3, `react` 19.2.0 → 19.2.8, `vite` 6.4.1 → 6.4.3. Nada se
+rompió. Eso explica además el crecimiento del CSS de core de 102.77 kB a 119.81 kB (se
+descartaron con evidencia las hipótesis de falta de estilos y de escaneo cruzado entre
+proyectos).
+
+**Decisión**:
+
+- **Durante el desarrollo**, las versiones quedan fijadas por el `package-lock.json` de la raíz
+  (991 entradas, commiteado). **No flotan solas**: actualizar es un acto deliberado (`npm
+  update`), revisado y commiteado como cualquier otro cambio.
+- **Al preparar una versión publicable**, se fijan versiones exactas en el `package.json` de las
+  **aplicaciones**: `luxsequencer-core`, `core-renderers`, `luxsequencer-cloud`. Como ya no hay
+  lockfile por repo, es lo único que acota qué instala un clon suelto.
+- **Las librerías mantienen rangos permisivos**: `@luxsequencer/contracts` y `@luxsequencer/ui`
+  **no se fijan nunca**. Fijar versiones en una librería publicada obliga a los consumidores a
+  instalar copias duplicadas y genera conflictos irresolubles. Hoy el punto es teórico: ambas
+  tienen **cero dependencias de runtime** (lux-ui sólo declara peers `react >=18`,
+  `@headlessui/react`), así que no hay nada que fijar.
+- **Fijar es un paso revisado, no una foto**: se fija después de verificar la app, nunca antes.
+  Es lo que evita repetir el salto ciego que ocurrió en la migración.
+
+**Límite conocido**: fijar en `package.json` sólo fija el **primer nivel** (~40 entradas). Las
+dependencias transitivas siguen resolviendo por sus propios rangos. Reproducibilidad total sólo
+la da un lockfile.
+
+**Dónde importa ese límite**: sólo donde se resuelven dependencias sin lockfile. Los artefactos
+publicados no corren riesgo — `contracts` y `lux-ui` se publican como `dist/` compilado y sin
+dependencias, y core/cloud/core-renderers se despliegan como bundles ya construidos. El riesgo
+real está en **dónde corre el build de producción**: si corre desde este workspace, está fijado;
+si algún día corre en CI clonando un repo suelto, hay que darle un lockfile.
+
+### Meta-repo de DX para terceros (planeado)
+
+Idea del autor (2026-08-07), y es la que **cierra el problema de los clones sueltos**: un segundo
+meta-repo, análogo a `luxsequencer-workspace` pero público y para desarrolladores externos, que
+agrupe los proyectos abiertos (`luxsequencer-core`, `core-renderers`) y **lleve su propio
+`package-lock.json` commiteado**.
+
+Con eso el externo deja de resolver dependencias a ciegas: clona, `npm ci`, y obtiene el árbol
+exacto que vos validaste. Resuelve el pendiente de reproducibilidad mejor que fijar versiones a
+mano, porque un lockfile fija el árbol completo y no sólo el primer nivel.
+
+Nota operativa para cuando se haga: **no editar el lockfile a mano**. Copiar el archivo entero
+desde este workspace y correr `npm install` — npm prefiere las versiones que ya están en el
+lockfile cuando satisfacen los rangos, así que reescribe la estructura y conserva las versiones.
+Después verificar con `npm ls` que coincidan.
+
 ### Mecanismo de estado: plan vs. en proceso vs. hecho
 
 Definido en [STATUS-PROTOCOL.md](STATUS-PROTOCOL.md). Cada repo lleva un `STATUS.md` con tabla de
@@ -465,25 +516,18 @@ Al cerrar cada fase: actualizar esta tabla y agregar el informe del proyecto (o 
 
 ## Pendientes abiertos al cierre del 2026-08-06
 
-1. **Republicar `lux-ui` como `0.1.1`** — el `@source` de Tailwind en `styles.css` no llega a
-   consumidores externos hasta esa versión.
+1. **Republicar `lux-ui` como `0.1.1`** — **POSTERGADO** por decisión del autor (2026-08-07).
+   Mientras se trabaje sólo en local, el symlink del workspace ya entrega el `@source` corregido;
+   subir versiones no aporta nada. Retomar cuando haya consumidores externos.
 
-2. **Decidir el pinneo de dependencias.** Borrar los lockfiles por proyecto provocó un upgrade no
-   revisado en los cinco: `tailwindcss` 4.1.18 → 4.3.3, `daisyui` 5.5.19 → 5.7.16,
-   `@tailwindcss/postcss` 4.1.18 → 4.3.3, `react` 19.2.0 → 19.2.8, `vite` 6.4.1 → 6.4.3.
-   Nada se rompió (type-check, builds y tests iguales), y el lockfile de la raíz ya congela el
-   estado, así que el float fue por única vez. Falta decidir si se acepta, se revierte o se
-   audita el changelog.
+2. **Bloqueantes 1, 3 y 4 del modelo de distribución** — quedan para **una conversación aparte**
+   (decisión del autor, 2026-08-07): licencias vacías, cloud sin lado servidor, y validación de
+   licencias rota en ambos extremos.
 
-   Esto **explica el crecimiento del CSS de core** de 102.77 kB a 119.81 kB, que en su momento
-   quedó sin explicación. Se descartaron con evidencia las dos hipótesis de falla: no faltan
-   estilos (`.select-none` presente) y Tailwind no escanea proyectos hermanos (las clases
-   exclusivas de cloud no aparecen en el CSS de core).
-
-3. **Sin lockfile en clones sueltos** — costo asumido del lockfile único en la raíz.
-
-4. **Bloqueantes 1, 3 y 4 del modelo de distribución** siguen abiertos: licencias vacías, cloud
-   sin lado servidor, y validación de licencias rota en ambos extremos.
+3. **Verificación visual pendiente.** El upgrade de dependencias (ver decisión abajo) subió
+   `daisyui` dos minors, y daisyUI es una librería de componentes visuales. Type-check, builds y
+   tests pasan, pero **ningún test de este proyecto mira píxeles**. Falta levantar la app y
+   mirarla: es el único hueco de verificación que quedó abierto de la migración a workspace.
 
 ### Descartado por error de medición
 
