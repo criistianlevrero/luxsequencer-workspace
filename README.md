@@ -88,6 +88,14 @@ git add <proyecto> && git commit       # registra la combinación nueva
 
 | Documento | Contenido |
 |---|---|
-| [`CLAUDE.md`](CLAUDE.md) | Estado del ecosistema, decisiones tomadas y drift detectado |
+| [`CLAUDE.md`](CLAUDE.md) | Índice y reglas de trabajo. **Empezar por acá** |
+| [`STATUS.md`](STATUS.md) | Estado del ecosistema y progreso de la auditoría |
 | [`STATUS-PROTOCOL.md`](STATUS-PROTOCOL.md) | Cómo se separa lo planeado de lo implementado |
+| [`docs/decisiones/`](docs/decisiones/) | Decisiones que cruzan repos, una por archivo y con fecha |
+| [`docs/auditoria/`](docs/auditoria/) | Informes de auditoría a nivel ecosistema |
+| [`docs/next-steps/`](docs/next-steps/) | Trabajo planeado que excede un proyecto |
 | `<proyecto>/STATUS.md` | Estado por capacidad de cada proyecto |
+| `<proyecto>/docs/` | Decisiones y hallazgos acotados a ese proyecto |
+
+**Regla de scope**: un documento vive en el repo al que pertenece. La raíz es sólo para lo que
+excede el scope de un proyecto.
