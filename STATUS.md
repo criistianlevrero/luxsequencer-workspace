@@ -73,8 +73,20 @@ Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion). Renombrar
 2. **Bloqueantes del modelo de distribución** — reservados para una conversación aparte
    (2026-08-07). Ver [docs/next-steps/bloqueantes-modelo-distribucion.md](docs/next-steps/bloqueantes-modelo-distribucion.md).
 
-3. **Distribuir el drift por proyecto.** Los hallazgos acotados a `luxsequencer-core`, `lux-ui` y
-   `core-renderers` todavía no tienen dónde vivir: falta crear su `docs/auditoria/`.
+3. **🚚 Mudanza pendiente de contenido con scope acotado.** Hay documentos en la raíz que
+   pertenecen a un proyecto. Están marcados con 🚚 en su encabezado. **Al actualizar la base de
+   conocimientos de esos repos, moverlos**:
+
+   | Documento en la raíz | A dónde va |
+   |---|---|
+   | [`docs/decisiones/2026-08-06-flag-desarrollo-renderers.md`](docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | `luxsequencer-core/docs/decisiones/` |
+   | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § copilot-instructions y ui/README | `luxsequencer-core/docs/auditoria/` |
+   | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § MIGRATION_PLAN | `lux-ui/docs/auditoria/` |
+   | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § versiones inconsistentes | `core-renderers/docs/auditoria/` |
+   | Decisión "Backend de cloud: Supabase", hoy dentro de `luxsequencer-cloud/STATUS.md` | `luxsequencer-cloud/docs/decisiones/` |
+
+   Están en la raíz sólo porque esos repos todavía no tienen la carpeta. **No es contenido de
+   ecosistema**: viola la regla de scope y está acá de forma transitoria.
 
 4. **Sin lockfile en clones sueltos** — costo asumido del lockfile único en la raíz. Lo cierra el
    meta-repo de DX para terceros.

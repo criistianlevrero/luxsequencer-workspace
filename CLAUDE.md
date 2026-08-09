@@ -51,16 +51,18 @@ viejo.** Editar la historia en el lugar es el mismo mecanismo de drift que estam
 
 ## Decisiones vigentes
 
-| Decisión | Fecha |
-|---|---|
-| [Topología: submódulos + npm workspace](docs/decisiones/2026-08-06-topologia-repos.md) | 2026-08-06 |
-| [Distribución de paquetes: npm público](docs/decisiones/2026-08-06-distribucion-npm-publico.md) | 2026-08-06 |
-| [Distribución de renderers: dos canales](docs/decisiones/2026-08-06-distribucion-renderers.md) | 2026-08-06 |
-| [Versionado de dependencias](docs/decisiones/2026-08-07-versionado-dependencias.md) | 2026-08-07 |
-| Backend de cloud: Supabase para todo | `luxsequencer-cloud/docs/decisiones/` |
-| Flag de desarrollo de renderers | `luxsequencer-core/docs/decisiones/` |
+| Decisión | Fecha | Alcance |
+|---|---|---|
+| [Topología: submódulos + npm workspace](docs/decisiones/2026-08-06-topologia-repos.md) | 2026-08-06 | ecosistema |
+| [Distribución de paquetes: npm público](docs/decisiones/2026-08-06-distribucion-npm-publico.md) | 2026-08-06 | ecosistema |
+| [Distribución de renderers: dos canales](docs/decisiones/2026-08-06-distribucion-renderers.md) | 2026-08-06 | ecosistema |
+| [Versionado de dependencias](docs/decisiones/2026-08-07-versionado-dependencias.md) | 2026-08-07 | ecosistema |
+| [Flag de desarrollo de renderers](docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | 2026-08-06 | 🚚 `luxsequencer-core` |
+| Backend de cloud: Supabase para todo | 2026-08-06 | 🚚 en `luxsequencer-cloud/STATUS.md` |
 
 **No relitigar sin motivo nuevo.**
+
+🚚 = pendiente de mudanza al repo que le corresponde. Ver [STATUS.md](STATUS.md).
 
 ## Trampas operativas (leer antes de tocar nada)
 
