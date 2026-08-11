@@ -3,7 +3,8 @@
 > **Este archivo es el índice.** Léelo entero antes de tocar nada; lo demás se consulta cuando
 > hace falta.
 >
-> **Última verificación**: 2026-08-07
+> **Última verificación**: 2026-08-11 — trampas operativas reverificadas una por una contra el
+> código.
 
 ## Qué estamos haciendo
 
@@ -71,26 +72,23 @@ viejo.** Editar la historia en el lugar es el mismo mecanismo de drift que estam
    `npm run dev:all` desde core. El 4174 devuelve 404 en `/` a propósito: no tiene `index.html`,
    sólo sirve archivos bajo `/src/`.
 
-2. **Hay trabajo sin commitear en dos repos, y es coherente entre sí.** `core-renderers` tiene el
-   renderer `diagnostic-fps/` entero sin trackear más `catalog.json` modificado, y
-   `luxsequencer-core` tiene 5 archivos modificados incluido el `ALLOWED_RENDERERS` que lo
-   registra. Es un cambio atómico cross-repo a medio terminar. **Confirmar con el autor antes de
-   commitear, resetear o interpretar esto como abandonado.**
-
-3. **Submódulos**: por defecto quedás en HEAD detached — hacé `git checkout <rama>` antes de
+2. **Submódulos**: por defecto quedás en HEAD detached — hacé `git checkout <rama>` antes de
    trabajar. Y **nunca commitees un puntero a un commit que no pusheaste**, porque nadie más va a
    poder clonar.
 
-4. **El caret en `0.x` es restrictivo**: `^0.1.0` es `>=0.1.0 <0.2.0`. Si subís
+3. **El caret en `0.x` es restrictivo**: `^0.1.0` es `>=0.1.0 <0.2.0`. Si subís
    `@luxsequencer/contracts` a `0.2.0`, npm **baja la `0.1.0` del registro en silencio** en vez de
    enlazar la carpeta local. Al bumpear una minor, actualizá los rangos de los consumidores en el
    mismo commit.
 
-5. **`lux-ui` y `contracts` se consumen desde `dist/`, no desde `src/`.** El script `prepare` los
+4. **`lux-ui` y `contracts` se consumen desde `dist/`, no desde `src/`.** El script `prepare` los
    recompila en cada `npm install`, pero si editás sus fuentes en caliente hay que rebuildear.
 
-6. **Hay archivos `.env` reales** en `luxsequencer-core/` y `luxsequencer-cloud/`. Están en
+5. **Hay archivos `.env` reales** en `luxsequencer-core/` y `luxsequencer-cloud/`. Están en
    `.gitignore` (verificado). No volcar su contenido en informes ni en salidas de comandos.
+
+6. **`npm test` en `luxsequencer-core` y `lux-ui` arranca vitest en modo watch** y se cuelga. Usar
+   `npx vitest run`.
 
 ## Metodología para las sesiones por proyecto
 
