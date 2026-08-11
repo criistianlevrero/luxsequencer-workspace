@@ -6,10 +6,10 @@
 > |---|---|
 > | `copilot-instructions.md` desactualizado | `luxsequencer-core/docs/auditoria/` |
 > | `ui/README.md` inventa una capa | `luxsequencer-core/docs/auditoria/` |
-> | `MIGRATION_PLAN.md` desactualizado hacia atrás | `lux-ui/docs/auditoria/` |
+> | ~~`MIGRATION_PLAN.md` desactualizado hacia atrás~~ | ✅ **Mudado 2026-08-11** a `lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md` |
 > | Versiones inconsistentes | `core-renderers/docs/auditoria/` |
 >
-> **Estado**: VIGENTE · **Fecha**: 2026-08-06
+> **Estado**: VIGENTE · **Fecha**: 2026-08-06 · **Última verificación**: 2026-08-11
 
 # Drift por proyecto — pendiente de repartir
 
@@ -25,17 +25,9 @@ verificada, no inferencia.
 
 ### 5. `MIGRATION_PLAN.md` de lux-ui está desactualizado hacia atrás
 
-Tareas marcadas `[ ]` que **ya están hechas**:
-
-- Fase 1, "Reemplazar imports en `luxsequencer-core`" → hecho
-  (`luxsequencer-core/src/components/ui/primitives/index.ts` es un re-export puro de
-  `@luxsequencer/ui`).
-- Fase 2 completa, "Migrar `SliderInput`, `CollapsibleSection`, `AdvancedSelect`,
-  `RangeSlider`" → los cuatro existen en `lux-ui/src/composites/`.
-- Fase 4, "Storybook con casos canónicos" y "Tests de regresión visual" → hay stories de Ladle
-  para prácticamente todos los componentes y `lux-ui/src/test/visual/` con Playwright.
-
-El "Avance actual" fechado 2026-03-03 quedó congelado.
+🚚 **Mudado el 2026-08-11** a
+[`lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md`](../../lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md),
+verificado de nuevo y ampliado con tres hallazgos más en la auditoría de Fase 2 de ese repo.
 
 ### 6. `luxsequencer-core/src/components/ui/README.md` inventa una capa
 

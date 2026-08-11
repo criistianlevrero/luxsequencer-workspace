@@ -1,6 +1,6 @@
 # Estado del ecosistema LuxSequencer
 
-**Última verificación**: 2026-08-07 · **Protocolo**: [STATUS-PROTOCOL.md](STATUS-PROTOCOL.md)
+**Última verificación**: 2026-08-11 · **Protocolo**: [STATUS-PROTOCOL.md](STATUS-PROTOCOL.md)
 
 Estado a nivel ecosistema. El estado de cada proyecto vive en su propio `STATUS.md`.
 
@@ -23,6 +23,11 @@ Notas:
 - **`npm run lint` de core falla aunque no haya errores**: usa `--max-warnings 0` y hay 260
   warnings (mayoría `no-explicit-any`). Está roto como gate de CI.
 - **`npm test` en core y lux-ui arranca vitest en modo watch** y se cuelga. Usar `npx vitest run`.
+- **`lux-ui` tiene un quinto gate que la tabla no cubre y está en rojo**: `npx playwright test`
+  falla. Diagnosticado el 2026-08-11: el test apunta a un id de story que no existe y captura la
+  página de error de Ladle; el snapshot base es un canvas vacío. **Nunca testeó nada.** Los cuatro
+  verdes de la fila también piden matices: el lint corre con `no-explicit-any` apagado y el
+  type-check cubre sólo `src/`. Ver [`lux-ui/STATUS.md`](lux-ui/STATUS.md).
 
 ## Capacidades del ecosistema
 
@@ -47,7 +52,7 @@ Notas:
 | General del monorepo | ✅ hecho | 2026-08-06 |
 | `luxsequencer-contracts` | ✅ hecho — auditado, publicado, con `STATUS.md` | 2026-08-06 |
 | `luxsequencer-cloud` | 🟡 parcial — `STATUS.md` y README hechos; falta auditar el código a fondo | 2026-08-06 |
-| `lux-ui` | ⬜ pendiente — publicado, pero sin `STATUS.md` ni auditoría | — |
+| `lux-ui` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
 | `core-renderers` | ⬜ pendiente | — |
 | `luxsequencer-core` | ⬜ pendiente — es el 70% del código, el más grande | — |
 
@@ -57,12 +62,16 @@ Notas:
 |---|---|---|---|
 | `luxsequencer-cloud` | ✅ | ✅ | ✅ |
 | `luxsequencer-contracts` | ✅ | ✅ | — (no necesita) |
+| `lux-ui` | ✅ | ⬜ | ✅ |
 | `luxsequencer-core` | ⬜ | ⬜ | ⬜ |
 | `core-renderers` | ⬜ | ⬜ | ⬜ |
-| `lux-ui` | ⬜ | ⬜ | ⬜ |
 
-Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion). Renombrar a
-`docs/next-steps/` al hacer su rollout.
+`lux-ui` tiene el README pendiente de recorte: describe una estructura y un flujo de instalación
+que no existen (ver su auditoría, § 3, filas D8–D12). No se tocó en la sesión de auditoría por la
+regla de no arreglar documentación sobre la marcha.
+
+~~Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion).~~ **Resuelto 2026-08-11**:
+renombrado a `docs/next-steps/`.
 
 ## Pendientes abiertos
 
@@ -81,7 +90,7 @@ Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion). Renombrar
    |---|---|
    | [`docs/decisiones/2026-08-06-flag-desarrollo-renderers.md`](docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | `luxsequencer-core/docs/decisiones/` |
    | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § copilot-instructions y ui/README | `luxsequencer-core/docs/auditoria/` |
-   | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § MIGRATION_PLAN | `lux-ui/docs/auditoria/` |
+   | ~~§ MIGRATION_PLAN~~ | ✅ **mudado 2026-08-11** a [`lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md`](lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md) |
    | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § versiones inconsistentes | `core-renderers/docs/auditoria/` |
    | Decisión "Backend de cloud: Supabase", hoy dentro de `luxsequencer-cloud/STATUS.md` | `luxsequencer-cloud/docs/decisiones/` |
 
