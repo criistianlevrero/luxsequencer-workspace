@@ -12,7 +12,7 @@ Estado a nivel ecosistema. El estado de cada proyecto vive en su propio `STATUS.
 | `lux-ui` | limpio | 8/8 | limpio | limpio |
 | `luxsequencer-core` | limpio | **5 fallan / 88** (3 archivos) | 0 errores, **260 warnings** | limpio |
 | `luxsequencer-cloud` | limpio | 27/27 | sin script | limpio |
-| `core-renderers` | sin script | sin suite | sin script | `npm run validate` ok |
+| `core-renderers` | **no existe** | **no existe** | **no existe** | no hay build; `npm run validate` ok |
 
 Notas:
 
@@ -28,6 +28,10 @@ Notas:
   página de error de Ladle; el snapshot base es un canvas vacío. **Nunca testeó nada.** Los cuatro
   verdes de la fila también piden matices: el lint corre con `no-explicit-any` apagado y el
   type-check cubre sólo `src/`. Ver [`lux-ui/STATUS.md`](lux-ui/STATUS.md).
+- **`core-renderers` no tiene gates porque no compila.** No es configuración faltante: no hay
+  `tsconfig.json`, y los `.ts` se sirven crudos para que Vite los transpile del lado del
+  consumidor. Tampoco hay build: `npm run preview` arranca y devuelve 404 en todo. Diagnosticado
+  el 2026-08-11, ver [`core-renderers/STATUS.md`](core-renderers/STATUS.md).
 
 ## Capacidades del ecosistema
 
@@ -39,7 +43,7 @@ Notas:
 | `@luxsequencer/contracts` en npm | IMPLEMENTADO | `0.1.0`, MIT | Publicado 2026-08-06 |
 | `@luxsequencer/ui` en npm | IMPLEMENTADO | `0.1.0`, MIT | Publicado 2026-08-06 |
 | Protocolo de estado | PARCIAL | [STATUS-PROTOCOL.md](STATUS-PROTOCOL.md) | Rollout en 2 de 5 repos |
-| Verificación visual de la app | IMPLEMENTADO | — | 2026-08-07: app levantada, 0 errores de consola, pipeline de renderers dibujando |
+| Verificación visual de la app | IMPLEMENTADO | — | 2026-08-11: los 4 renderers dibujan. **`dvd-screensaver` sale invertido verticalmente**; ver [`core-renderers/STATUS.md`](core-renderers/STATUS.md) |
 | Licencias abiertas en core y core-renderers | PLANEADO | — | Ver [bloqueantes](docs/next-steps/bloqueantes-modelo-distribucion.md) |
 | Lado servidor de cloud | PLANEADO | — | Ver [bloqueantes](docs/next-steps/bloqueantes-modelo-distribucion.md) |
 | Meta-repo de DX para terceros | PLANEADO | — | Ver [next-steps](docs/next-steps/meta-repo-dx-terceros.md) |
@@ -53,7 +57,7 @@ Notas:
 | `luxsequencer-contracts` | ✅ hecho — auditado, publicado, con `STATUS.md` | 2026-08-06 |
 | `luxsequencer-cloud` | 🟡 parcial — `STATUS.md` y README hechos; falta auditar el código a fondo | 2026-08-06 |
 | `lux-ui` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
-| `core-renderers` | ⬜ pendiente | — |
+| `core-renderers` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
 | `luxsequencer-core` | ⬜ pendiente — es el 70% del código, el más grande | — |
 
 ## Rollout del protocolo de estado
@@ -63,12 +67,15 @@ Notas:
 | `luxsequencer-cloud` | ✅ | ✅ | ✅ |
 | `luxsequencer-contracts` | ✅ | ✅ | — (no necesita) |
 | `lux-ui` | ✅ | ⬜ | ✅ |
+| `core-renderers` | ✅ | ⬜ | ✅ |
 | `luxsequencer-core` | ⬜ | ⬜ | ⬜ |
-| `core-renderers` | ⬜ | ⬜ | ⬜ |
 
 `lux-ui` tiene el README pendiente de recorte: describe una estructura y un flujo de instalación
-que no existen (ver su auditoría, § 3, filas D8–D12). No se tocó en la sesión de auditoría por la
-regla de no arreglar documentación sobre la marcha.
+que no existen (ver su auditoría, § 3, filas D8–D12). `core-renderers` también: documenta
+`npm run preview` como funcional, un flujo de instalación con `npm link` que ya no es la
+topología vigente, y un plan de contratos cuya fase 1 está hecha (ver su auditoría, § 3, filas
+D1–D5). Ninguno de los dos se tocó en su sesión de auditoría, por la regla de no arreglar
+documentación sobre la marcha.
 
 ~~Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion).~~ **Resuelto 2026-08-11**:
 renombrado a `docs/next-steps/`.
@@ -91,7 +98,7 @@ renombrado a `docs/next-steps/`.
    | [`docs/decisiones/2026-08-06-flag-desarrollo-renderers.md`](docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | `luxsequencer-core/docs/decisiones/` |
    | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § copilot-instructions y ui/README | `luxsequencer-core/docs/auditoria/` |
    | ~~§ MIGRATION_PLAN~~ | ✅ **mudado 2026-08-11** a [`lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md`](lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md) |
-   | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § versiones inconsistentes | `core-renderers/docs/auditoria/` |
+   | ~~§ versiones inconsistentes~~ | ✅ **mudado 2026-08-11** a [`core-renderers/docs/auditoria/2026-08-06-drift-versiones.md`](core-renderers/docs/auditoria/2026-08-06-drift-versiones.md) |
    | Decisión "Backend de cloud: Supabase", hoy dentro de `luxsequencer-cloud/STATUS.md` | `luxsequencer-cloud/docs/decisiones/` |
 
    Están en la raíz sólo porque esos repos todavía no tienen la carpeta. **No es contenido de

@@ -110,8 +110,8 @@ patrón que `core-renderers/scripts/validate-catalog.mjs`.
 | luxsequencer-cloud | ✅ 2026-08-06 | ✅ 2026-08-06 |
 | luxsequencer-contracts | ✅ 2026-08-06 | ✅ 2026-08-06 |
 | lux-ui | ✅ 2026-08-11 | ⬜ |
+| core-renderers | ✅ 2026-08-11 | ⬜ |
 | luxsequencer-core | ⬜ | ⬜ |
-| core-renderers | ⬜ | ⬜ |
 
 ~~Nota de unificación pendiente: `lux-ui` usa `docs/nextsteps/` (sin guion).~~
 **Resuelto 2026-08-11**: renombrado a `docs/next-steps/`.

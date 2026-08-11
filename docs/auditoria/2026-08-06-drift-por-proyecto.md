@@ -7,7 +7,7 @@
 > | `copilot-instructions.md` desactualizado | `luxsequencer-core/docs/auditoria/` |
 > | `ui/README.md` inventa una capa | `luxsequencer-core/docs/auditoria/` |
 > | ~~`MIGRATION_PLAN.md` desactualizado hacia atrás~~ | ✅ **Mudado 2026-08-11** a `lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md` |
-> | Versiones inconsistentes | `core-renderers/docs/auditoria/` |
+> | ~~Versiones inconsistentes~~ | ✅ **Mudado 2026-08-11** a `core-renderers/docs/auditoria/2026-08-06-drift-versiones.md` |
 >
 > **Estado**: VIGENTE · **Fecha**: 2026-08-06 · **Última verificación**: 2026-08-11
 
@@ -49,6 +49,8 @@ mismo documento sin marcarlo.
 
 ### 8. Versiones inconsistentes en core-renderers
 
-Existe `RELEASE_NOTES_v0.1.0-beta.2.md`, pero `package.json` y `catalog.json` siguen en
-`0.1.0-beta.1`. Y los `manifest.json` de los renderers declaran `packageVersion: "0.6.0-beta"`
-—la versión de *core*, no la del repo de renderers.
+🚚 **Mudado el 2026-08-11** a
+[`core-renderers/docs/auditoria/2026-08-06-drift-versiones.md`](../../core-renderers/docs/auditoria/2026-08-06-drift-versiones.md),
+reverificado y ampliado en la auditoría de Fase 2 de ese repo: HEAD está 6 commits por delante del
+último tag, y esos commits incluyen un refactor completo y un renderer nuevo sin que ningún número
+haya subido.
