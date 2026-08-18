@@ -61,7 +61,7 @@ Notas:
 | `luxsequencer-cloud` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-18 |
 | `lux-ui` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
 | `core-renderers` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
-| `luxsequencer-core` | ✅ hecho — auditado, con `STATUS.md`. README y `copilot-instructions.md` pendientes de recorte | 2026-08-12 |
+| `luxsequencer-core` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-12 |
 
 **Fase 2 cerrada en los 5 repos** (2026-08-18). El ciclo de auditoría por proyecto está completo.
 
@@ -103,10 +103,17 @@ instalación en los cuatro archivos.
 Ninguno se tocó en su sesión de auditoría, por la regla de no arreglar documentación sobre la
 marcha.
 
-`luxsequencer-core` arrastra además dos documentos que **inducen a construir contra arquitectura
-removida**: `.github/copilot-instructions.md` —que es el que los agentes leen automáticamente— y
-`src/components/ui/README.md`. Ver
-[su drift](luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md).
+~~`luxsequencer-core` arrastra además dos documentos que **inducen a construir contra arquitectura
+removida**: `.github/copilot-instructions.md` y `src/components/ui/README.md`.~~
+✅ **Corregidos el 2026-08-18**, empezando por ahí porque el primero es el que los agentes leen
+automáticamente. Ver
+[su drift](luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md), que quedó
+como registro de qué decían.
+
+Los dos casos dejaron un criterio aplicable al resto del recorte: **donde el conocimiento ya vive
+en `docs/`, el documento apunta en vez de duplicar**. El drift de `copilot-instructions.md` se
+sostenía justamente porque mantenía copia propia del contrato de renderers sin mencionar
+`docs/renderers.md`, que estaba sano y era la fuente de verdad.
 
 ~~Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion).~~ **Resuelto 2026-08-11**:
 renombrado a `docs/next-steps/`.
