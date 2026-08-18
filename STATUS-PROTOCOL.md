@@ -107,14 +107,19 @@ patrón que `core-renderers/scripts/validate-catalog.mjs`.
 
 | Repo | `STATUS.md` | README recortado |
 |---|---|---|
-| luxsequencer-cloud | ✅ 2026-08-06 | ✅ 2026-08-06 |
+| luxsequencer-cloud | ✅ 2026-08-06 | 🟡 parcial 2026-08-06 |
 | luxsequencer-contracts | ✅ 2026-08-06 | ✅ 2026-08-06 |
 | lux-ui | ✅ 2026-08-11 | ⬜ |
 | core-renderers | ✅ 2026-08-11 | ⬜ |
 | luxsequencer-core | ✅ 2026-08-12 | ⬜ |
 
 `STATUS.md` completo en los 5 repos desde el 2026-08-12. Lo que falta es el recorte de READMEs en
-los 3 que quedan.
+**los 4 que quedan**.
+
+La fila de cloud decía ✅ y se corrigió a 🟡 el 2026-08-18: el recorte del 2026-08-06 sacó la spec
+de producto del README —de 510 a 123 líneas— pero dejó intacta la sección de instalación, que se
+desactualizó ese mismo día con la decisión de topología. Es el caso que muestra por qué la
+columna necesita más de dos estados: un recorte puede ser real y quedar incompleto.
 
 ~~Nota de unificación pendiente: `lux-ui` usa `docs/nextsteps/` (sin guion).~~
 **Resuelto 2026-08-11**: renombrado a `docs/next-steps/`.

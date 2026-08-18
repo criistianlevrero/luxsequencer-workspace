@@ -58,28 +58,36 @@ Notas:
 |---|---|---|
 | General del monorepo | ✅ hecho | 2026-08-06 |
 | `luxsequencer-contracts` | ✅ hecho — auditado, publicado, con `STATUS.md` | 2026-08-06 |
-| `luxsequencer-cloud` | 🟡 parcial — `STATUS.md` y README hechos; falta auditar el código a fondo | 2026-08-06 |
+| `luxsequencer-cloud` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-18 |
 | `lux-ui` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
 | `core-renderers` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
 | `luxsequencer-core` | ✅ hecho — auditado, con `STATUS.md`. README y `copilot-instructions.md` pendientes de recorte | 2026-08-12 |
 
-**Fase 2 cerrada en 4 de 5 repos.** Queda `luxsequencer-cloud`, que tiene `STATUS.md` y README
-hechos desde el 2026-08-06 pero **nunca se le auditó el código a fondo** con la metodología de
-Fase 2. Es el pendiente real del ciclo.
+**Fase 2 cerrada en los 5 repos** (2026-08-18). El ciclo de auditoría por proyecto está completo.
+
+Lo que queda abierto del ciclo no es auditar: es **aplicar**. Los cuatro repos con README sin
+recortar comparten un mismo drift, y cada auditoría dejó su lista de deuda priorizada en el
+`STATUS.md` del repo.
 
 ## Rollout del protocolo de estado
 
 | Repo | `STATUS.md` | README recortado | `docs/` con scope propio |
 |---|---|---|---|
-| `luxsequencer-cloud` | ✅ | ✅ | ✅ |
+| `luxsequencer-cloud` | ✅ | ⬜ (ver abajo) | ✅ |
 | `luxsequencer-contracts` | ✅ | ✅ | — (no necesita) |
 | `lux-ui` | ✅ | ⬜ | ✅ |
 | `core-renderers` | ✅ | ⬜ | ✅ |
 | `luxsequencer-core` | ✅ | ⬜ | ✅ |
 
-Los tres repos con README pendiente de recorte comparten un mismo drift: **los tres describen la
-instalación con `npm link` y repos clonados sueltos**, que dejó de ser la topología vigente el
-2026-08-06. Además, cada uno tiene lo suyo:
+**Corrección del 2026-08-18**: esta tabla daba el README de cloud por recortado. El recorte del
+2026-08-06 fue real —de 510 a 123 líneas, con la spec de producto movida a
+`docs/next-steps/plataforma-vision.md`— pero resolvió un problema distinto y **no tocó la sección
+de instalación**, que se desactualizó ese mismo día con la decisión de topología. Son cuatro
+repos, no tres.
+
+Los cuatro comparten el mismo drift: **describen la instalación con `npm link`, dependencias
+`file:` y repos clonados sueltos**, que dejó de ser la topología vigente el 2026-08-06. Además,
+cada uno tiene lo suyo:
 
 - `lux-ui`: describe una estructura que no existe (su auditoría, § 3, filas D8–D12).
 - `core-renderers`: documenta `npm run preview` como funcional y un plan de contratos cuya fase 1
@@ -87,6 +95,10 @@ instalación con `npm link` y repos clonados sueltos**, que dejó de ser la topo
 - `luxsequencer-core`: dice que el ecosistema tiene cuatro repos y son cinco, lista 3 renderers
   oficiales cuando son 4, y afirma GPL-3.0 con un `LICENSE` de 0 bytes (su auditoría, § 3, filas
   D1–D5).
+- `luxsequencer-cloud`: sólo el drift compartido (su auditoría, § 3, filas D1–D3).
+
+Los cuatro se pueden hacer en una sola pasada: el núcleo del problema es el mismo texto de
+instalación en los cuatro archivos.
 
 Ninguno se tocó en su sesión de auditoría, por la regla de no arreglar documentación sobre la
 marcha.
@@ -108,9 +120,9 @@ renombrado a `docs/next-steps/`.
 2. **Bloqueantes del modelo de distribución** — reservados para una conversación aparte
    (2026-08-07). Ver [docs/next-steps/bloqueantes-modelo-distribucion.md](docs/next-steps/bloqueantes-modelo-distribucion.md).
 
-3. **🚚 Mudanza pendiente de contenido con scope acotado.** Hay documentos en la raíz que
-   pertenecen a un proyecto. Están marcados con 🚚 en su encabezado. **Al actualizar la base de
-   conocimientos de esos repos, moverlos**:
+3. ~~**🚚 Mudanza pendiente de contenido con scope acotado.**~~ ✅ **Cerrado el 2026-08-18.** La
+   raíz ya no tiene contenido acotado a un solo proyecto. Se deja la tabla como registro de dónde
+   fue cada cosa:
 
    | Documento en la raíz | A dónde va |
    |---|---|
@@ -118,15 +130,13 @@ renombrado a `docs/next-steps/`.
    | ~~§ copilot-instructions y ui/README~~ | ✅ **mudado 2026-08-12** a [`luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md`](luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md) |
    | ~~§ MIGRATION_PLAN~~ | ✅ **mudado 2026-08-11** a [`lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md`](lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md) |
    | ~~§ versiones inconsistentes~~ | ✅ **mudado 2026-08-11** a [`core-renderers/docs/auditoria/2026-08-06-drift-versiones.md`](core-renderers/docs/auditoria/2026-08-06-drift-versiones.md) |
-   | Decisión "Backend de cloud: Supabase", hoy dentro de `luxsequencer-cloud/STATUS.md` | `luxsequencer-cloud/docs/decisiones/` |
+   | ~~Decisión "Backend de cloud: Supabase"~~ | ✅ **mudado 2026-08-18** a [`luxsequencer-cloud/docs/decisiones/2026-08-06-backend-supabase.md`](luxsequencer-cloud/docs/decisiones/2026-08-06-backend-supabase.md) |
 
-   **Sólo queda la fila de cloud**, y se cierra cuando se le haga la auditoría de Fase 2. De
-   [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md)
-   ya se repartieron las cuatro secciones acotadas a un repo; lo que sobrevive ahí es la § 7
-   (README de cloud), que también espera esa sesión.
-
-   Están en la raíz sólo porque esos repos todavía no tienen la carpeta. **No es contenido de
-   ecosistema**: viola la regla de scope y está acá de forma transitoria.
+   `docs/auditoria/2026-08-06-drift-por-proyecto.md` **se retiró el 2026-08-18**: sus cinco
+   secciones están repartidas. Cuatro se mudaron a los repos correspondientes; la § 7 (README de
+   cloud como spec de producto) **no se mudó porque ya estaba resuelta** desde el 2026-08-06, con
+   el recorte del README de 510 a 123 líneas y la spec a `docs/next-steps/plataforma-vision.md`.
+   Verificado el 2026-08-18.
 
 4. **Sin lockfile en clones sueltos** — costo asumido del lockfile único en la raíz. Lo cierra el
    meta-repo de DX para terceros.
