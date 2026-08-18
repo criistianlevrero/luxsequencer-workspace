@@ -73,32 +73,47 @@ recortar comparten un mismo drift, y cada auditoría dejó su lista de deuda pri
 
 | Repo | `STATUS.md` | README recortado | `docs/` con scope propio |
 |---|---|---|---|
-| `luxsequencer-cloud` | ✅ | ⬜ (ver abajo) | ✅ |
-| `luxsequencer-contracts` | ✅ | ✅ | — (no necesita) |
-| `lux-ui` | ✅ | ⬜ | ✅ |
-| `core-renderers` | ✅ | ⬜ | ✅ |
-| `luxsequencer-core` | ✅ | ⬜ | ✅ |
+| `luxsequencer-cloud` | ✅ | ✅ 2026-08-18 | ✅ |
+| `luxsequencer-contracts` | ✅ | ✅ 2026-08-18 | — (no necesita) |
+| `lux-ui` | ✅ | ✅ 2026-08-18 | ✅ |
+| `core-renderers` | ✅ | ✅ 2026-08-18 | ✅ |
+| `luxsequencer-core` | ✅ | ✅ 2026-08-18 | ✅ |
 
-**Corrección del 2026-08-18**: esta tabla daba el README de cloud por recortado. El recorte del
-2026-08-06 fue real —de 510 a 123 líneas, con la spec de producto movida a
-`docs/next-steps/plataforma-vision.md`— pero resolvió un problema distinto y **no tocó la sección
-de instalación**, que se desactualizó ese mismo día con la decisión de topología. Son cuatro
-repos, no tres.
+**Rollout del protocolo completo en los 5 repos.**
 
-Los cuatro comparten el mismo drift: **describen la instalación con `npm link`, dependencias
-`file:` y repos clonados sueltos**, que dejó de ser la topología vigente el 2026-08-06. Además,
-cada uno tiene lo suyo:
+✅ **Cerrado el 2026-08-18.** Los cinco READMEs quedaron recortados y verificados.
 
-- `lux-ui`: describe una estructura que no existe (su auditoría, § 3, filas D8–D12).
-- `core-renderers`: documenta `npm run preview` como funcional y un plan de contratos cuya fase 1
-  está hecha (su auditoría, § 3, filas D1–D5).
-- `luxsequencer-core`: dice que el ecosistema tiene cuatro repos y son cinco, lista 3 renderers
-  oficiales cuando son 4, y afirma GPL-3.0 con un `LICENSE` de 0 bytes (su auditoría, § 3, filas
-  D1–D5).
-- `luxsequencer-cloud`: sólo el drift compartido (su auditoría, § 3, filas D1–D3).
+Resultó ser **un** problema, no cuatro: `luxsequencer-core` y `core-renderers` compartían un
+bloque **idéntico de 58 líneas** describiendo la topología anterior al 2026-08-06 —repos clonados
+sueltos, `npm link lux-ui`—, y `lux-ui` y `cloud` tenían versiones abreviadas del mismo. El drift
+no derivó cuatro veces: derivó una y estaba copiado.
 
-Los cuatro se pueden hacer en una sola pasada: el núcleo del problema es el mismo texto de
-instalación en los cuatro archivos.
+**La orquestación del ecosistema ahora vive sólo en el [`README.md`](README.md) de esta raíz** y
+los cinco proyectos apuntan ahí. Lo único que se repite a propósito es el orden de arranque
+4174 → 3000, en `core` y `core-renderers`, porque es lo que rompe si no se sabe.
+
+Además, dos repos que esta tabla daba por recortados **no lo estaban**:
+
+- `luxsequencer-cloud`: el recorte del 2026-08-06 fue real —de 510 a 123 líneas, con la spec
+  movida a `plataforma-vision.md`— pero no tocó Requisitos ni Instalación.
+- `luxsequencer-contracts`: afirmaba que el paquete **no estaba publicado en npm**. Lo está desde
+  el 2026-08-06; verificado contra el registro el 2026-08-18 (`0.1.0`, MIT).
+
+Los dos se desactualizaron **el mismo día en que se los marcó ✅**, por la decisión de topología.
+
+Lo propio de cada repo, también corregido:
+
+- `lux-ui`: documentaba una capa `patterns/` que no existe, y el alcance de extracción como plan
+  cuando ya hay una decisión que lo supersede.
+- `core-renderers`: `npm run preview` como funcional (devuelve 404 en todo), 3 renderers cuando
+  son 4, y un plan de contratos presentado entero como futuro con la fase 1 hecha. El plan se
+  movió a su `docs/next-steps/`.
+- `luxsequencer-core`: cuatro repos cuando son cinco, 3 renderers cuando son 4, **GPL-3.0 con un
+  `LICENSE` de 0 bytes**, y `npm run test` publicado sin avisar que se cuelga en watch.
+
+Sobre la licencia: no se eligió ninguna. El README ahora dice que está sin definir y que el
+default legal es *todos los derechos reservados*, en vez de afirmar algo falso. Sigue siendo un
+[bloqueante abierto](docs/next-steps/bloqueantes-modelo-distribucion.md).
 
 Ninguno se tocó en su sesión de auditoría, por la regla de no arreglar documentación sobre la
 marcha.

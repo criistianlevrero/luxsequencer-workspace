@@ -7,7 +7,11 @@ ecosistema como submódulos y los une en un único workspace de npm.
 > Protocolo de estado: [`STATUS-PROTOCOL.md`](STATUS-PROTOCOL.md).
 > Contexto para sesiones con agentes: [`CLAUDE.md`](CLAUDE.md).
 >
-> **Última verificación**: 2026-08-06
+> **Última verificación**: 2026-08-18
+>
+> Este documento es la **fuente única de la orquestación del ecosistema**: topología, instalación,
+> orden de arranque y resolución de dependencias. Los READMEs de los cinco proyectos apuntan acá
+> en vez de repetirlo.
 
 ## Para qué existe
 
@@ -40,6 +44,26 @@ npm install
 | `lux-ui` | `@luxsequencer/ui` | `criistianlevrero/lux-ui` | `main` | **npm público** |
 | `luxsequencer-contracts` | `@luxsequencer/contracts` | `criistianlevrero/luxsequencer-contracts` | `main` | **npm público** |
 | `luxsequencer-cloud` | `luxsequencer-cloud` | `criistianlevrero/luxsequencer-cloud` | `main` | Cerrado |
+
+## Levantar el entorno
+
+**El orden importa.** `core-renderers` sirve los workers que la app core carga por proxy, así que
+va primero:
+
+```bash
+# 1. marketplace de renderers — puerto 4174, strictPort
+cd core-renderers && npm run dev
+
+# 2. app core — puerto 3000, proxea el 4174 en /marketplace-core-renderers
+cd luxsequencer-core && npm run dev
+```
+
+El atajo que hace las dos cosas es `npm run dev:all`, desde `luxsequencer-core`.
+
+> **El 4174 devuelve 404 en `/` a propósito.** No tiene `index.html`: sólo sirve archivos bajo
+> `/src/`. Ver un 404 ahí no significa que esté roto.
+
+`luxsequencer-cloud` es independiente de esos dos: `npm run dev` y listo.
 
 ## Cómo se resuelven las dependencias
 

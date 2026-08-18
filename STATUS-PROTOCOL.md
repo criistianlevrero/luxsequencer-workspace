@@ -107,19 +107,34 @@ patrón que `core-renderers/scripts/validate-catalog.mjs`.
 
 | Repo | `STATUS.md` | README recortado |
 |---|---|---|
-| luxsequencer-cloud | ✅ 2026-08-06 | 🟡 parcial 2026-08-06 |
-| luxsequencer-contracts | ✅ 2026-08-06 | ✅ 2026-08-06 |
-| lux-ui | ✅ 2026-08-11 | ⬜ |
-| core-renderers | ✅ 2026-08-11 | ⬜ |
-| luxsequencer-core | ✅ 2026-08-12 | ⬜ |
+| luxsequencer-cloud | ✅ 2026-08-06 | ✅ 2026-08-18 |
+| luxsequencer-contracts | ✅ 2026-08-06 | ✅ 2026-08-18 |
+| lux-ui | ✅ 2026-08-11 | ✅ 2026-08-18 |
+| core-renderers | ✅ 2026-08-11 | ✅ 2026-08-18 |
+| luxsequencer-core | ✅ 2026-08-12 | ✅ 2026-08-18 |
 
-`STATUS.md` completo en los 5 repos desde el 2026-08-12. Lo que falta es el recorte de READMEs en
-**los 4 que quedan**.
+**Rollout completo en los 5 repos desde el 2026-08-18.**
 
-La fila de cloud decía ✅ y se corrigió a 🟡 el 2026-08-18: el recorte del 2026-08-06 sacó la spec
-de producto del README —de 510 a 123 líneas— pero dejó intacta la sección de instalación, que se
-desactualizó ese mismo día con la decisión de topología. Es el caso que muestra por qué la
-columna necesita más de dos estados: un recorte puede ser real y quedar incompleto.
+Sobre las fechas de la segunda columna: `cloud` y `contracts` figuraban ✅ desde el 2026-08-06 y
+**estaba mal**. Los dos recortes fueron reales —cloud pasó de 510 a 123 líneas— pero ninguno tocó
+la sección de instalación, que se desactualizó **ese mismo día** con la decisión de topología.
+`contracts` llegó a afirmar que el paquete no estaba publicado cuando ya lo estaba.
+
+La lección para la próxima verificación: **un recorte puede ser real y quedar incompleto**, y un
+✅ puesto el mismo día que cambia la topología es sospechoso por construcción.
+
+## Una fuente única para la orquestación
+
+Los cuatro READMEs con drift de instalación no tenían cuatro textos distintos: `luxsequencer-core`
+y `core-renderers` compartían un bloque **idéntico de 58 líneas**, y los otros dos versiones
+abreviadas del mismo. El drift no derivó cuatro veces; derivó una y estaba copiado.
+
+Desde el 2026-08-18, la topología, la instalación, el orden de arranque y la resolución de
+dependencias viven **sólo en el `README.md` de la raíz**. Los cinco proyectos apuntan ahí.
+
+Lo único que se repite a propósito es el orden de arranque 4174 → 3000, presente también en
+`luxsequencer-core` y `core-renderers`: es lo que rompe si no lo sabés, y son los dos repos donde
+importa.
 
 ~~Nota de unificación pendiente: `lux-ui` usa `docs/nextsteps/` (sin guion).~~
 **Resuelto 2026-08-11**: renombrado a `docs/next-steps/`.
