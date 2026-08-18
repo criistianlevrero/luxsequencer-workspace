@@ -111,7 +111,10 @@ patrón que `core-renderers/scripts/validate-catalog.mjs`.
 | luxsequencer-contracts | ✅ 2026-08-06 | ✅ 2026-08-06 |
 | lux-ui | ✅ 2026-08-11 | ⬜ |
 | core-renderers | ✅ 2026-08-11 | ⬜ |
-| luxsequencer-core | ⬜ | ⬜ |
+| luxsequencer-core | ✅ 2026-08-12 | ⬜ |
+
+`STATUS.md` completo en los 5 repos desde el 2026-08-12. Lo que falta es el recorte de READMEs en
+los 3 que quedan.
 
 ~~Nota de unificación pendiente: `lux-ui` usa `docs/nextsteps/` (sin guion).~~
 **Resuelto 2026-08-11**: renombrado a `docs/next-steps/`.

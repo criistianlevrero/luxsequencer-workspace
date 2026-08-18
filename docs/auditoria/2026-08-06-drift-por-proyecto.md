@@ -4,12 +4,15 @@
 >
 > | Sección | A dónde va |
 > |---|---|
-> | `copilot-instructions.md` desactualizado | `luxsequencer-core/docs/auditoria/` |
-> | `ui/README.md` inventa una capa | `luxsequencer-core/docs/auditoria/` |
+> | ~~`copilot-instructions.md` desactualizado~~ | ✅ **Mudado 2026-08-12** a `luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md` |
+> | ~~`ui/README.md` inventa una capa~~ | ✅ **Mudado 2026-08-12** a `luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md` |
 > | ~~`MIGRATION_PLAN.md` desactualizado hacia atrás~~ | ✅ **Mudado 2026-08-11** a `lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md` |
 > | ~~Versiones inconsistentes~~ | ✅ **Mudado 2026-08-11** a `core-renderers/docs/auditoria/2026-08-06-drift-versiones.md` |
 >
-> **Estado**: VIGENTE · **Fecha**: 2026-08-06 · **Última verificación**: 2026-08-11
+> **Sólo queda la § 7 (README de cloud)**, que se muda cuando ese repo tenga su auditoría de
+> Fase 2.
+>
+> **Estado**: VIGENTE · **Fecha**: 2026-08-06 · **Última verificación**: 2026-08-12
 
 # Drift por proyecto — pendiente de repartir
 
@@ -18,10 +21,11 @@ verificada, no inferencia.
 
 ### 4. `copilot-instructions.md` de core describe una versión y una arquitectura viejas
 
-- Afirma *"package.json shows v0.0.0"*; la versión real es `0.6-beta`.
-- Documenta `RendererDefinition.component` como el React FC que dibuja. Tras el refactor a
-  worker-only, todos los renderers usan `EmptyExternalRenderer` (`() => null`) y el dibujado
-  ocurre en el worker externo.
+🚚 **Mudado el 2026-08-12** a
+[`luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md`](../../luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md),
+reverificado en la auditoría de Fase 2 de ese repo y ampliado con un hallazgo más: el documento
+también publica `type: 'custom'` como tipo de control válido, que es justamente lo que la política
+de controles declarativos estrictos prohíbe.
 
 ### 5. `MIGRATION_PLAN.md` de lux-ui está desactualizado hacia atrás
 
@@ -31,10 +35,11 @@ verificado de nuevo y ampliado con tres hallazgos más en la auditoría de Fase 
 
 ### 6. `luxsequencer-core/src/components/ui/README.md` inventa una capa
 
-Documenta cuatro capas (`primitives/`, `composites/`, `patterns/`, `foundation/`).
-**`foundation/` no existe** en `luxsequencer-core/src/components/ui/`; se fue a lux-ui.
-También lista `AdvancedSelect` como composite de core, pero core sólo conserva `ColorPicker` y
-`Vector2DPicker`.
+🚚 **Mudado el 2026-08-12** al
+[mismo documento que la § 4](../../luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md),
+por ser el mismo problema —documentación para agentes que describe arquitectura removida—
+reverificado y ampliado: además de `foundation/`, que no existe, `primitives/` ya no contiene
+ningún componente local. Es un barrel de re-exports de `@luxsequencer/ui`.
 
 ### 7. El README de cloud es una especificación de producto, no una descripción del código
 

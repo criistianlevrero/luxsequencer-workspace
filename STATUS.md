@@ -1,6 +1,6 @@
 # Estado del ecosistema LuxSequencer
 
-**Última verificación**: 2026-08-11 · **Protocolo**: [STATUS-PROTOCOL.md](STATUS-PROTOCOL.md)
+**Última verificación**: 2026-08-12 · **Protocolo**: [STATUS-PROTOCOL.md](STATUS-PROTOCOL.md)
 
 Estado a nivel ecosistema. El estado de cada proyecto vive en su propio `STATUS.md`.
 
@@ -16,10 +16,13 @@ Estado a nivel ecosistema. El estado de cada proyecto vive en su propio `STATUS.
 
 Notas:
 
-- **Los 5 tests que fallan en core son preexistentes** a la migración a workspace, con la misma
-  causa raíz: el mock de `../../components/renderers` no expone `resolveRendererDefinition`,
-  export nuevo tras el refactor a worker-only. Archivos: `Sequencer.test.tsx` (2),
-  `project.slice.test.ts` (2), `ui.slice.test.ts` (1).
+- **Los 5 tests que fallan en core son preexistentes** a la migración a workspace, y tienen
+  **dos causas raíz, no una** (corregido el 2026-08-12; antes esta nota decía que compartían
+  causa). `Sequencer.test.tsx` (2) y `ui.slice.test.ts` (1) fallan porque el mock de
+  `../../components/renderers` no expone `resolveRendererDefinition`, export nuevo tras el
+  refactor a worker-only. `project.slice.test.ts` (2) falla por otra cosa: el harness de store
+  del test no incluye `hydrateRendererAnimatableProperties` (`project.slice.ts:451`). El arreglo
+  es distinto en cada familia. Ver [`luxsequencer-core/STATUS.md`](luxsequencer-core/STATUS.md).
 - **`npm run lint` de core falla aunque no haya errores**: usa `--max-warnings 0` y hay 260
   warnings (mayoría `no-explicit-any`). Está roto como gate de CI.
 - **`npm test` en core y lux-ui arranca vitest en modo watch** y se cuelga. Usar `npx vitest run`.
@@ -58,7 +61,11 @@ Notas:
 | `luxsequencer-cloud` | 🟡 parcial — `STATUS.md` y README hechos; falta auditar el código a fondo | 2026-08-06 |
 | `lux-ui` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
 | `core-renderers` | ✅ hecho — auditado, con `STATUS.md`. README pendiente de recorte | 2026-08-11 |
-| `luxsequencer-core` | ⬜ pendiente — es el 70% del código, el más grande | — |
+| `luxsequencer-core` | ✅ hecho — auditado, con `STATUS.md`. README y `copilot-instructions.md` pendientes de recorte | 2026-08-12 |
+
+**Fase 2 cerrada en 4 de 5 repos.** Queda `luxsequencer-cloud`, que tiene `STATUS.md` y README
+hechos desde el 2026-08-06 pero **nunca se le auditó el código a fondo** con la metodología de
+Fase 2. Es el pendiente real del ciclo.
 
 ## Rollout del protocolo de estado
 
@@ -68,14 +75,26 @@ Notas:
 | `luxsequencer-contracts` | ✅ | ✅ | — (no necesita) |
 | `lux-ui` | ✅ | ⬜ | ✅ |
 | `core-renderers` | ✅ | ⬜ | ✅ |
-| `luxsequencer-core` | ⬜ | ⬜ | ⬜ |
+| `luxsequencer-core` | ✅ | ⬜ | ✅ |
 
-`lux-ui` tiene el README pendiente de recorte: describe una estructura y un flujo de instalación
-que no existen (ver su auditoría, § 3, filas D8–D12). `core-renderers` también: documenta
-`npm run preview` como funcional, un flujo de instalación con `npm link` que ya no es la
-topología vigente, y un plan de contratos cuya fase 1 está hecha (ver su auditoría, § 3, filas
-D1–D5). Ninguno de los dos se tocó en su sesión de auditoría, por la regla de no arreglar
-documentación sobre la marcha.
+Los tres repos con README pendiente de recorte comparten un mismo drift: **los tres describen la
+instalación con `npm link` y repos clonados sueltos**, que dejó de ser la topología vigente el
+2026-08-06. Además, cada uno tiene lo suyo:
+
+- `lux-ui`: describe una estructura que no existe (su auditoría, § 3, filas D8–D12).
+- `core-renderers`: documenta `npm run preview` como funcional y un plan de contratos cuya fase 1
+  está hecha (su auditoría, § 3, filas D1–D5).
+- `luxsequencer-core`: dice que el ecosistema tiene cuatro repos y son cinco, lista 3 renderers
+  oficiales cuando son 4, y afirma GPL-3.0 con un `LICENSE` de 0 bytes (su auditoría, § 3, filas
+  D1–D5).
+
+Ninguno se tocó en su sesión de auditoría, por la regla de no arreglar documentación sobre la
+marcha.
+
+`luxsequencer-core` arrastra además dos documentos que **inducen a construir contra arquitectura
+removida**: `.github/copilot-instructions.md` —que es el que los agentes leen automáticamente— y
+`src/components/ui/README.md`. Ver
+[su drift](luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md).
 
 ~~Pendiente de unificación: `lux-ui` usa `docs/nextsteps/` (sin guion).~~ **Resuelto 2026-08-11**:
 renombrado a `docs/next-steps/`.
@@ -95,11 +114,16 @@ renombrado a `docs/next-steps/`.
 
    | Documento en la raíz | A dónde va |
    |---|---|
-   | [`docs/decisiones/2026-08-06-flag-desarrollo-renderers.md`](docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | `luxsequencer-core/docs/decisiones/` |
-   | [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md) § copilot-instructions y ui/README | `luxsequencer-core/docs/auditoria/` |
+   | ~~`docs/decisiones/2026-08-06-flag-desarrollo-renderers.md`~~ | ✅ **mudado 2026-08-12** a [`luxsequencer-core/docs/decisiones/`](luxsequencer-core/docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) |
+   | ~~§ copilot-instructions y ui/README~~ | ✅ **mudado 2026-08-12** a [`luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md`](luxsequencer-core/docs/auditoria/2026-08-06-drift-copilot-instructions.md) |
    | ~~§ MIGRATION_PLAN~~ | ✅ **mudado 2026-08-11** a [`lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md`](lux-ui/docs/auditoria/2026-08-06-drift-migration-plan.md) |
    | ~~§ versiones inconsistentes~~ | ✅ **mudado 2026-08-11** a [`core-renderers/docs/auditoria/2026-08-06-drift-versiones.md`](core-renderers/docs/auditoria/2026-08-06-drift-versiones.md) |
    | Decisión "Backend de cloud: Supabase", hoy dentro de `luxsequencer-cloud/STATUS.md` | `luxsequencer-cloud/docs/decisiones/` |
+
+   **Sólo queda la fila de cloud**, y se cierra cuando se le haga la auditoría de Fase 2. De
+   [`docs/auditoria/2026-08-06-drift-por-proyecto.md`](docs/auditoria/2026-08-06-drift-por-proyecto.md)
+   ya se repartieron las cuatro secciones acotadas a un repo; lo que sobrevive ahí es la § 7
+   (README de cloud), que también espera esa sesión.
 
    Están en la raíz sólo porque esos repos todavía no tienen la carpeta. **No es contenido de
    ecosistema**: viola la regla de scope y está acá de forma transitoria.
