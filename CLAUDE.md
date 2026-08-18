@@ -6,6 +6,18 @@
 > **Última verificación**: 2026-08-11 — trampas operativas reverificadas una por una contra el
 > código.
 
+## Qué es esto
+
+**LuxSequencer es un generador visual en tiempo real para VJs, con un marketplace de renderers de
+terceros.** El usuario se loguea en cloud, adquiere renderers, y al abrir el core usa los que
+tiene registrados a su nombre. `core-renderers` es el repo de ejemplo y desarrollo, no el canal de
+entrega.
+
+Ese objetivo estaba disperso entre decisiones y se escribió explícito el 2026-08-18. Importa para
+leer el resto: buena parte de la infraestructura de firma, identidad y trust store que parece
+sobredimensionada existe por esto. Arquitectura objetivo y huecos:
+[docs/next-steps/marketplace-de-terceros.md](docs/next-steps/marketplace-de-terceros.md).
+
 ## Qué estamos haciendo
 
 Auditoría técnica del conjunto LuxSequencer, en dos fases:
@@ -58,6 +70,7 @@ viejo.** Editar la historia en el lugar es el mismo mecanismo de drift que estam
 | [Distribución de paquetes: npm público](docs/decisiones/2026-08-06-distribucion-npm-publico.md) | 2026-08-06 | ecosistema |
 | [Distribución de renderers: dos canales](docs/decisiones/2026-08-06-distribucion-renderers.md) | 2026-08-06 | ecosistema |
 | [Versionado de dependencias](docs/decisiones/2026-08-07-versionado-dependencias.md) | 2026-08-07 | ecosistema |
+| [Entrega de renderers: camino único, caché local, fuente revisada](docs/decisiones/2026-08-18-entrega-de-renderers.md) | 2026-08-18 | ecosistema |
 | [Flag de desarrollo de renderers](luxsequencer-core/docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | 2026-08-06 | `luxsequencer-core` |
 | [Backend de cloud: Supabase para todo](luxsequencer-cloud/docs/decisiones/2026-08-06-backend-supabase.md) | 2026-08-06 | `luxsequencer-cloud` |
 
