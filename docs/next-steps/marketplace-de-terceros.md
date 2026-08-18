@@ -95,14 +95,56 @@ registro que se arme en runtime con lo que cloud responda para esa cuenta.
 La tabla `purchases` existe con su RLS de sólo lectura —correcta: el usuario no puede fabricarse
 una compra— pero ningún código la escribe. Requiere H3, y Stripe sigue sin instalarse.
 
-### H6 — Falta el modelo de capacidades para la revisión 🟠
+### H6 — Falta el modelo de capacidades 🟠
 
-Un worker puede hacer `fetch()` a cualquier lado; `dvd-screensaver` ya lo hace (R8 de la auditoría
-de `core-renderers`). Revisar fuente ajena buscando malicia sin un modelo de amenazas escrito no
-escala más allá de unos pocos paquetes conocidos.
+**El problema.** Un renderer es JavaScript arbitrario corriendo en el browser del usuario, **en el
+mismo origen que la app** —tiene que ser same-origin, por eso existe el proxy del 4174 para evitar
+el `SecurityError` al construir el `Worker`—. Es decir: código de terceros ejecutándose dentro de
+la frontera de confianza, con `fetch`, WebSockets, IndexedDB del origen, `importScripts` y todo el
+CPU que quiera.
 
-Medio camino hecho: `requiredCapabilities` en el manifest y `validateRendererSdkContract` ya
-existen.
+No es hipotético. `dvd-screensaver.worker.ts:143` hace `await fetch(trimmed)` sobre una URL que el
+usuario pega en un control, para bajar un logo custom. **Es una feature legítima**, y es también
+una llamada de red sin declarar ni restringir. Hoy no existe diferencia entre "necesito red para
+una feature" y "necesito red para exfiltrar".
+
+**Por qué la revisión sola no cierra el hueco.** Ver el punto 5 de
+[la decisión de entrega](../decisiones/2026-08-18-entrega-de-renderers.md): un paquete aprobado
+que pueda cargar código en runtime descarga su carga real después de la revisión.
+
+**Las dos mitades del modelo.**
+
+*Declarar* — existe a medias, y **sobre el eje equivocado**. Los valores actuales de
+`requiredCapabilities` son `offscreen-canvas`, `webgl2`, `canvas2d`, `uniform-updates`: capacidades
+de *tecnología de dibujo*, que responden "¿el browser lo soporta?", no "¿se lo permito?". Además
+se declaran en la allowlist del core (`src/components/renderers/index.ts:153` y siguientes), **no
+en los `manifest.json` de los renderers** — verificado el 2026-08-18: los manifests no las traen.
+Para un tercero no hay hoy ningún lugar donde declarar nada.
+
+*Hacer cumplir* — no existe. Declarar `webgl2` no impide llamar a `fetch`.
+
+**El eje correcto.** La enorme mayoría de los renderers necesitan canvas, uniforms que entran,
+`ImageBitmap` que sale. Nada más: sin red, sin storage, sin código dinámico. Un renderer que pide
+red es la excepción que se mira con lupa en la revisión — como el caso legítimo de
+`dvd-screensaver`.
+
+**Cómo hacerlo cumplir**, en orden de fuerza:
+
+| Nivel | Qué es | Se lo saltea |
+|---|---|---|
+| Sólo revisión | alguien lee el código | ofuscación, o carga diferida |
+| Análisis estático en el build | cloud rechaza fuente que referencie los globals prohibidos | `globalThis['fe'+'tch']` |
+| **Sandbox en runtime** | un bootstrap neutraliza esos globals antes del código del renderer | nada, si lo inyecta cloud al compilar |
+| Aislamiento por origen | servir el worker desde otro origen | pelea con el same-origin del `Worker` |
+
+**Enfoque elegido: estático + sandbox.** El análisis en el build como filtro barato y señal para
+el revisor; el sandbox como la garantía real. Sin sandbox, la revisión es teatro.
+
+**Qué falta diseñar**: el conjunto cerrado de capacidades, su representación en el manifest, el
+contenido del bootstrap, y los límites de recursos que van en ese mismo lugar.
+
+Medio camino hecho: `validateRendererSdkContract` y el campo `requiredCapabilities` ya existen —
+hay que reorientarlos de compatibilidad a permiso.
 
 ### H7 — Caché local de renderers adquiridos 🟡
 
@@ -119,7 +161,20 @@ formato no está definido.
 
 ## Decisiones de producto que siguen abiertas
 
-- **Política de revalidación de titularidad** (ver la decisión de entrega): cada cuánto se
-  rechequea contra cloud y qué pasa con un usuario offline por semanas.
+- **Ventana de reembolso.** La decisión de entrega delega los reembolsos a política comercial en
+  vez de enforcement técnico, pero no fija la ventana.
 - **Comisión y precios.** La tabla `platform_config` tiene un `global_commission_percent` con
   default 20% y ningún código que lo lea.
+
+> La **política de revalidación de titularidad** figuraba acá y se resolvió el 2026-08-18:
+> titularidad permanente, con revocación por paquete como canal separado. Ver el punto 4 de la
+> decisión de entrega.
+
+## Huecos que aparecen de esas decisiones
+
+- **Canal de revocación consultable desde el core.** La maquinaria del trust store existe
+  (`communityTrustStoreRevocationUrl`, `communityRevokedPublicKeyIds`, gracia de rotación), pero
+  cloud no expone ningún endpoint que la alimente.
+- **Telemetría oportunista de uso**, agregada y declarada en los términos, para detectar cuentas
+  compartidas sin bloquear a nadie. No existe nada: `posthog` está instalado y el módulo que lo
+  envuelve es huérfano.

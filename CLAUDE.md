@@ -3,8 +3,8 @@
 > **Este archivo es el índice.** Léelo entero antes de tocar nada; lo demás se consulta cuando
 > hace falta.
 >
-> **Última verificación**: 2026-08-11 — trampas operativas reverificadas una por una contra el
-> código.
+> **Última verificación**: 2026-08-18 — objetivo del producto escrito explícito, Fase 2 cerrada,
+> recorte de READMEs completo. Trampas operativas reverificadas el 2026-08-11.
 
 ## Qué es esto
 
@@ -20,12 +20,17 @@ sobredimensionada existe por esto. Arquitectura objetivo y huecos:
 
 ## Qué estamos haciendo
 
-Auditoría técnica del conjunto LuxSequencer, en dos fases:
+La auditoría técnica del conjunto **está cerrada** desde el 2026-08-18:
 
-1. **Fase 1 (hecha, 2026-08-06)** — Análisis general del monorepo. Informe en
+1. **Fase 1 (2026-08-06)** — Análisis general del monorepo. Informe en
    [docs/auditoria/2026-08-06-fase-1-monorepo.md](docs/auditoria/2026-08-06-fase-1-monorepo.md).
-2. **Fase 2 (en curso)** — Una sesión de análisis por proyecto, con la misma metodología.
-   Progreso en [STATUS.md](STATUS.md).
+2. **Fase 2 (2026-08-11 a 2026-08-18)** — Una sesión por proyecto, los cinco. Cada informe está en
+   el `docs/auditoria/` de su repo, y el estado por capacidad en su `STATUS.md`.
+
+**Lo que sigue ya no es auditar, es construir.** El trabajo abierto está priorizado en
+[STATUS.md](STATUS.md) y, para el marketplace,
+en [docs/next-steps/marketplace-de-terceros.md](docs/next-steps/marketplace-de-terceros.md). El
+próximo paso es H1: el contrato genérico de uniforms, que bloquea todo lo demás.
 
 ## Regla número uno: la documentación tiene drift confirmado
 
@@ -70,7 +75,7 @@ viejo.** Editar la historia en el lugar es el mismo mecanismo de drift que estam
 | [Distribución de paquetes: npm público](docs/decisiones/2026-08-06-distribucion-npm-publico.md) | 2026-08-06 | ecosistema |
 | [Distribución de renderers: dos canales](docs/decisiones/2026-08-06-distribucion-renderers.md) | 2026-08-06 | ecosistema |
 | [Versionado de dependencias](docs/decisiones/2026-08-07-versionado-dependencias.md) | 2026-08-07 | ecosistema |
-| [Entrega de renderers: camino único, caché local, fuente revisada](docs/decisiones/2026-08-18-entrega-de-renderers.md) | 2026-08-18 | ecosistema |
+| [Entrega de renderers: camino único, caché local, titularidad permanente](docs/decisiones/2026-08-18-entrega-de-renderers.md) | 2026-08-18 | ecosistema |
 | [Flag de desarrollo de renderers](luxsequencer-core/docs/decisiones/2026-08-06-flag-desarrollo-renderers.md) | 2026-08-06 | `luxsequencer-core` |
 | [Backend de cloud: Supabase para todo](luxsequencer-cloud/docs/decisiones/2026-08-06-backend-supabase.md) | 2026-08-06 | `luxsequencer-cloud` |
 
